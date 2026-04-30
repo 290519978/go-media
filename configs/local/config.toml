@@ -20,7 +20,7 @@ Port = 15123
 # HTTP 请求超时
 Timeout = "1m"
 # JWT 签名密钥（上线前务必修改）
-JwtSecret = "maas-box-local-jwt-secret"
+JwtSecret = "local-jwt-secret"
 
 # =========================
 # AI 服务配置
