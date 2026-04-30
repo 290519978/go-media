@@ -1,0 +1,24 @@
+services:
+  zlm:
+    image: zlmediakit/zlmediakit:master
+    container_name: zlm
+    restart: unless-stopped
+    volumes:
+      - ./configs/local/zlm.ini:/opt/media/conf/config.ini
+      - ./configs/zlm-www:/opt/media/www
+      - ./configs/recordings:/recordings
+      - ./configs/recordings-buffer:/recordings-buffer
+      #- /data/maas-recordings-buffer:/recordings-buffer
+    network_mode: bridge
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "11935:11935"
+      - "1554:1554"
+      - "11029:11029"
+      - "18000:18000/udp"
+      - "11000:11000"
+      - "11000:11000/udp"
+      - "21000-21100:21000-21100/udp"
+    mem_limit: 512m
+    cpus: "1.0"

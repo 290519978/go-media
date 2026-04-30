@@ -1,0 +1,15 @@
+services:
+  zlm:
+    image: zlmediakit/zlmediakit:master
+    container_name: zlm
+    restart: unless-stopped
+    volumes:
+      - ./configs/prod/zlm.ini:/opt/media/conf/config.ini
+      - ./configs/zlm-www:/opt/media/www
+      - ./configs/recordings:/recordings
+      - ./configs/recordings-buffer:/recordings-buffer
+      #- /data/maas-recordings-buffer:/recordings-buffer
+      - /dev/null:/dev/mqueue
+    network_mode: host
+    # mem_limit: 512m
+    # cpus: "1.0"

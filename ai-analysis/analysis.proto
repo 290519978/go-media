@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+package analysis;
+
+option go_package = "./protos";
+
+message StartCameraRequest {
+  string camera_id = 1;
+  string camera_name = 2;
+  string rtsp_url = 3;
+  string detect_rate_mode = 4;
+  repeated AlgorithmConfig algorithm_configs = 5;
+
+  reserved 6, 7, 9, 12, 13, 14, 15;
+  int32 retry_limit = 8;
+
+  string callback_url = 10;
+  string callback_secret = 11;
+  string llm_api_url = 16;
+  string llm_api_key = 17;
+  string llm_model = 18;
+  string llm_prompt = 19;
+  int32 detect_rate_value = 20;
+}
+
+message AlgorithmConfig {
+  string algorithm_id = 1;
+  string task_code = 2;
+  repeated string labels = 3;
+  float yolo_threshold = 4;
+  float iou_threshold = 6;
+  string labels_trigger_mode = 7;
+  int32 detect_mode = 9;
+  reserved 5, 8;
+}
+
+message StartCameraResponse {
+  bool success = 1;
+  string message = 2;
+  int32 source_width = 3;
+  int32 source_height = 4;
+  float source_fps = 5;
+}
+
+message StopCameraRequest {
+  string camera_id = 1;
+}
+
+message StopCameraResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message StatusRequest {}
+
+message CameraStatus {
+  string camera_id = 1;
+  string status = 2;
+  int64 frames_processed = 3;
+  string last_error = 4;
+  int32 retry_count = 5;
+}
+
+message GlobalStats {
+  int32 active_streams = 1;
+  int64 total_detections = 2;
+  int64 uptime_seconds = 3;
+}
+
+message StatusResponse {
+  bool is_ready = 1;
+  repeated CameraStatus cameras = 2;
+  GlobalStats stats = 3;
+}
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+  }
+  ServingStatus status = 1;
+}
+
+message BoundingBox {
+  int32 x_min = 1;
+  int32 y_min = 2;
+  int32 x_max = 3;
+  int32 y_max = 4;
+}
+
+message Detection {
+  string label = 1;
+  float confidence = 2;
+  BoundingBox box = 3;
+  int32 area = 4;
+}
+
+message AnalyzeImageRequest {
+  string camera_id = 1;
+  string image_base64 = 2;
+  repeated AlgorithmConfig algorithm_configs = 3;
+  reserved 4, 5, 6, 7;
+  string llm_api_url = 8;
+  string llm_api_key = 9;
+  string llm_model = 10;
+  string llm_prompt = 11;
+}
+
+message AlgorithmResult {
+  string algorithm_id = 1;
+  string task_code = 2;
+  int32 alarm = 3;
+  string source = 4;
+  string reason = 5;
+  repeated Detection boxes = 6;
+}
+
+message AnalyzeImageResponse {
+  bool success = 1;
+  string message = 2;
+  string camera_id = 3;
+  reserved 4;
+  repeated Detection detections = 5;
+  string llm_result = 6;
+  string snapshot = 7;
+  int32 snapshot_width = 8;
+  int32 snapshot_height = 9;
+  repeated AlgorithmResult algorithm_results = 10;
+}
+
+service AnalysisService {
+  rpc StartCamera(StartCameraRequest) returns (StartCameraResponse);
+  rpc StopCamera(StopCameraRequest) returns (StopCameraResponse);
+  rpc GetStatus(StatusRequest) returns (StatusResponse);
+  rpc AnalyzeImage(AnalyzeImageRequest) returns (AnalyzeImageResponse);
+}
+
+service Health {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+}

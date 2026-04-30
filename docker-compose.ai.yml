@@ -1,0 +1,33 @@
+services:
+  maas-box-ai:
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile.ai
+    image: maas-box/ai:arm64
+    container_name: maas-box-ai
+    restart: unless-stopped
+    command:
+      [
+        "python",
+        "main.py",
+        "--port",
+        "50051",
+        "--http-port",
+        "50052",
+        "--callback-url",
+        "http://127.0.0.1:15123/ai",
+        "--callback-secret",
+        "maas-box-callback-token",
+        "--algorithm-test-root",
+        "/app/configs/test",
+        "--log-dir",
+        "/app/configs/logs/ai"
+      ]
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./configs:/app/configs
+      - /dev/null:/dev/mqueue
+    network_mode: host
+    # mem_limit: 1536m
+    # cpus: "1.5"

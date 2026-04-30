@@ -1,0 +1,41 @@
+services:
+  maas-box-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai
+      args:
+        PYTHON_BASE_IMAGE: ${MAAS_BOX_AI_BASE_IMAGE:-m.daocloud.io/docker.io/library/python:3.11-slim}
+        PIP_INDEX_URL: ${MAAS_BOX_AI_PIP_INDEX_URL:-https://mirrors.aliyun.com/pypi/simple/}
+        PIP_TRUSTED_HOST: ${MAAS_BOX_AI_PIP_TRUSTED_HOST:-mirrors.aliyun.com}
+    image: maas-box/ai:latest
+    container_name: maas-box-ai
+    restart: unless-stopped
+    command:
+      [
+        "python",
+        "main.py",
+        "--port",
+        "50051",
+        "--http-port",
+        "50052",
+        "--callback-url",
+        "http://host.docker.internal:15123/ai",
+        "--callback-secret",
+        "maas-box-callback-token",
+        "--algorithm-test-root",
+        "/app/configs/test",
+        "--log-dir",
+        "/app/configs/logs/ai"
+      ]
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./configs:/app/configs
+    network_mode: bridge
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "50051:50051"
+      - "50052:50052"
+    mem_limit: 1536m
+    cpus: "1.5"

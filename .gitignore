@@ -1,0 +1,24 @@
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
+
+# Local test artifacts
+_test_logs/
+
+# Temporary backup files
+*.exe~
+*.exe
+
+/configs/recordings/
+/configs/recordings-buffer/
+/configs/cover/
+/configs/test/
+/configs/logs/
+/configs/events/
+/configs/device_snapshots/
+/configs/data.db
+/build/
+/internal/server/configs/
+
+/nvr/
+/.vscode/

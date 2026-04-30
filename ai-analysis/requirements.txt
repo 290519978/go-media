@@ -1,0 +1,19 @@
+# ONNX Runtime
+onnxruntime>=1.17.0
+
+# gRPC
+grpcio>=1.78.0
+protobuf>=6.31.1
+
+# Image processing
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+
+# HTTP client
+requests>=2.31.0
+
+# OpenAI-compatible SDK (DashScope compatible-mode)
+openai>=1.40.0
+
+# DashScope SDK (local video file input)
+dashscope>=1.24.6

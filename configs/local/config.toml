@@ -1,0 +1,251 @@
+# =========================
+# 服务基础配置
+# =========================
+[Server]
+Version = "0.0.1"
+Development = "hzwlzhg"
+# 是否开启调试模式（生产环境建议 false）
+Debug = true
+# 管理员默认账号（首次启动会按此初始化）
+Username = "admin"
+# 管理员默认密码（上线前务必修改）
+Password = "admin"
+
+# =========================
+# HTTP 服务配置
+# =========================
+[Server.HTTP]
+# 后端 HTTP 监听端口
+Port = 15123
+# HTTP 请求超时
+Timeout = "1m"
+# JWT 签名密钥（上线前务必修改）
+JwtSecret = "maas-box-local-jwt-secret"
+
+# =========================
+# AI 服务配置
+# =========================
+[Server.AI]
+# 是否禁用 AI 服务对接
+Disabled = false
+# AI 相关文件保留天数（事件快照、算法测试图）
+RetainDays = 7
+# AI 服务地址（Go -> AI）
+ServiceURL = "http://127.0.0.1:50052"
+# AI 回调到后端地址（AI -> Go，本地 Docker host 默认回调本机 Go）
+CallbackURL = "http://127.0.0.1:15123/ai"
+# AI 回调鉴权 Token（需与 AI 侧一致）
+CallbackToken = "maas-box-callback-token"
+# 调用 AI 服务超时
+RequestTimeout = "10s"
+# 图片分析可恢复失败的额外补跑轮数，0 表示关闭
+AnalyzeImageFailureRetryCount = 2
+LLMAPIURL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+LLMAPIKey = "sk-6776c9e7cc0c460181ff512509a27656"
+LLMModel = "qwen3-vl-flash"
+# LLM 总 token 配额，<= 0 表示不启用 token 限额控制
+TotalTokenLimit = 198899
+# 是否在达到/超过 LLM 总 token 配额后停掉运行中的任务，并禁用新的 AI 识别
+DisableOnTokenLimitExceeded = false
+# 算法测试单次最多上传图片数量
+AlgorithmTestImageMaxCount = 5
+# 算法测试单次最多上传视频数量
+AlgorithmTestVideoMaxCount = 1
+# 算法测试视频抽帧 FPS
+AlgorithmTestVideoFPS = 1
+# 算法测试视频大小上限（字节）
+AlgorithmTestVideoMaxBytes = 104857600
+# 算法测试视频最小时长（秒）
+AlgorithmTestVideoMinSeconds = 2
+# 算法测试视频最大时长（秒）
+AlgorithmTestVideoMaxSeconds = 1200
+
+# =========================
+# ZLMediaKit 配置
+# =========================
+[Server.ZLM]
+# 是否禁用 ZLM 对接
+Disabled = false
+# ZLM HTTP API 地址
+APIURL = "http://127.0.0.1:11029"
+# ZLM Hook/API 密钥（需与 zlm.ini 一致）
+Secret = "jvRqCAzEg7AszBi4gm1cfhwXpmnVmJMG"
+# 对外播放地址主机名或 IP（前端与设备可达）
+PlayHost = "127.0.0.1"
+# AI 拉流专用主机（仅用于下发给 AI 的 RTSP 地址）
+# 本地 Docker host 推荐填写 127.0.0.1；bridge 模式可填 host.docker.internal / zlm
+# 未配置时不改写下发给 AI 的 RTSP host
+AIInputHost = "127.0.0.1"
+# ZLM HTTP 端口
+HTTPPort = 11029
+# ZLM RTSP 端口（AI 输入与排障使用）
+RTSPPort = 1554
+# ZLM RTMP 端口（推流与播放使用）
+RTMPPort = 11935
+# 默认应用名
+App = "live"
+# RTMP 自动接入全局 Token（用于 on_publish 鉴权）
+RTMPAutoPublishToken = "abc123"
+
+# =========================
+# ZLM Web 播放协议开关（应用层）
+# 注意：RTSP/RTMP 地址固定生成，不受这里控制
+# =========================
+[Server.ZLM.Output]
+# 是否暴露 WebRTC 播放地址
+EnableWebRTC = true
+# 是否暴露 WS-FLV 播放地址
+EnableWSFLV = true
+# 是否暴露 HTTP-FLV 播放地址
+EnableHTTPFLV = false
+# 是否暴露 HLS 播放地址
+EnableHLS = false
+# Web 预览备选协议：ws_flv | http_flv | hls
+WebFallback = "ws_flv"
+
+# =========================
+# GB28181 SIP 配置
+# =========================
+[Server.SIP]
+# 是否启用 GB28181 SIP 服务
+Enabled = true
+# SIP 监听 IP（0.0.0.0 表示监听全部网卡）
+ListenIP = "0.0.0.0"
+# SIP 监听端口（TCP/UDP）
+Port = 15060
+# 平台 20 位服务 ID
+ServerID = "34020000002000000001"
+# SIP 域
+Domain = "3402000000"
+# 平台统一鉴权密码（设备侧需一致）
+Password = "123456"
+# 页面“参数预检（非真实注册）”说明文案
+GuideNote = "参数预检仅用于检查配置正确性，不代表设备已真实注册到平台。"
+# 页面“参数预检（非真实注册）”提示文案
+Tips = [
+  "GB28181 的设备ID/服务ID必须是20位数字编码",
+  "弱网和复杂 NAT 场景优先使用 UDP",
+  "请确认防火墙已放行 SIP 与媒体端口",
+]
+# 参数预检默认推荐传输协议（tcp/udp）
+RecommendedTransport = "udp"
+# 注册有效期（秒）
+RegisterExpires = 3600
+# 心跳间隔（秒）
+KeepaliveInterval = 60
+# 媒体 IP（为空时回退到请求主机）
+MediaIP = ""
+# RTP 默认端口（用于预览联调）
+MediaRTPPort = 11000
+# RTP 端口范围（供 ZLM RTP Server 使用）
+MediaPortRange = "21000-21100"
+# 参数预检默认设备 ID 示例
+SampleDeviceID = "34020000001320000001"
+# 心跳超时判定（秒）
+KeepaliveTimeoutSec = 180
+# 注册宽限时间（秒）
+RegisterGraceSec = 30
+
+# =========================
+# 录像与存储策略
+# =========================
+[Server.Recording]
+# 是否禁用录像相关能力
+Disabled = false
+# 是否允许“持续录制”（eMMC 设备建议 false）
+AllowContinuous = true
+# 可选录像模式：none=不录制，continuous=持续录制
+Modes = ["none", "continuous"]
+# 默认录像模式（新建设备/自动接入默认值）
+DefaultMode = "none"
+# 录像文件根目录（后端视角）
+StorageDir = "./configs/recordings"
+# ZLM 写盘目录（用于 startRecord.customized_path）
+# Docker 推荐：宿主机 ./configs/recordings 挂载到容器 /recordings
+ZLMStorageDir = "/recordings"
+# 持续录制文件保留天数
+RetainDays = 7
+# 磁盘占用阈值（百分比），超过后触发压缩清理
+DiskUsageThreshold = 95
+# 持续录制分片时长（秒）
+SegmentSeconds = 60
+
+[Server.Recording.AlarmClip]
+# 报警片段录制默认开关（设备/任务可覆盖）
+EnabledDefault = true
+# 报警前保留秒数
+PreSeconds = 10
+# 报警后保留秒数
+PostSeconds = 10
+# 预录缓冲切片时长（秒，建议 1~5）
+BufferSegmentSeconds = 5
+# 预录缓冲保留窗口（秒，建议 >= PreSeconds + PostSeconds）
+BufferKeepSeconds = 60
+# 预录缓冲本地目录（建议挂载内存盘/ramdisk）
+BufferDir = "./configs/recordings-buffer"
+# BufferDir = "/data/maas-recordings-buffer"
+# ZLM 容器内预录缓冲目录（Docker 建议单独挂载到内存盘）
+# 为空时默认使用 ZLMStorageDir + "/_alarm_buffer"
+ZLMBufferDir = "/recordings-buffer"
+# 报警结束后，再额外等几秒再收片段
+SessionSettleSeconds = 2
+# 单次报警片段会话最长不允许超过多少秒
+MaxSessionSeconds = 180
+# 服务重启后把未完成的报警片段补收口
+RecoverOnStartup = true
+
+# =========================
+# 视频任务默认值
+# =========================
+[Server.TaskDefaults.Video]
+# 算法报警周期默认值（秒，允许 0，0 表示不抑制重复通知）
+AlertCycleSecondsDefault = 30
+# 告警等级默认值（仅支持内置三级）
+AlarmLevelIDDefault = "alarm_level_1"
+# 抽帧模式可选值（fps=每秒几帧，interval=每几秒1帧）
+FrameRateModes = ["interval", "fps"]
+# 抽帧模式默认值（必须属于 FrameRateModes）
+FrameRateModeDefault = "interval"
+# 默认抽帧值
+FrameRateValueDefault = 2
+
+# =========================
+# 存储清理策略（统一照片/视频）
+# =========================
+[Server.Cleanup]
+# 是否启用统一清理器
+Enabled = true
+# 清理周期
+Interval = "1m"
+# Soft 水位（百分比）：优先清临时/低价值文件
+SoftWatermark = 40
+# Hard 水位（百分比）：继续清持续录制与过期证据
+HardWatermark = 92
+# Critical 水位（百分比）
+CriticalWatermark = 97
+# 最小可用空间（GB）
+MinFreeGB = 1
+# 告警证据最短保留天数（事件快照 + 报警片段）
+AlarmClipRetainDays = 7
+# ZLM 抓拍临时目录（zlm.ini 的 snapRoot 对应宿主机路径）
+ZLMSnapDir = "./configs/zlm-www/snap"
+# ZLM 抓拍临时文件保留分钟数
+ZLMSnapRetainMinutes = 30
+# 紧急破保（仅 Critical 且空间不足时允许删保留期内证据）
+EmergencyBreakGlass = true
+
+# =========================
+# 数据库配置
+# =========================
+[Data.Database]
+# SQLite 数据库路径
+Dsn = "./configs/data.db"
+
+# =========================
+# 日志配置
+# =========================
+[Log]
+# 日志目录
+Dir = "./logs"
+# 日志级别：debug | info | warn | error
+Level = "debug"
