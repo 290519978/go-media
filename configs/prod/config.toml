@@ -20,7 +20,7 @@ Port = 15123
 # HTTP 请求超时
 Timeout = "1m"
 # JWT 签名密钥（上线前务必修改）
-JwtSecret = "maas-box-local-jwt-secret"
+JwtSecret = "local-jwt-secret"
 
 # =========================
 # AI 服务配置
@@ -41,7 +41,7 @@ RequestTimeout = "20s"
 # 图片分析可恢复失败的额外补跑轮数，0 表示关闭
 AnalyzeImageFailureRetryCount = 2
 LLMAPIURL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-LLMAPIKey = "sk-6776c9e7cc0c460181ff512509a27656"
+LLMAPIKey = "sk-"
 LLMModel = "qwen3-vl-flash"
 # LLM 总 token 配额，<= 0 表示不启用 token 限额控制
 TotalTokenLimit = 0
