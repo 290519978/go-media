@@ -3,7 +3,7 @@
 # =========================
 [Server]
 Version = "0.0.1"
-Development = "hzwlzhg"
+Development = ""
 # 是否开启调试模式（生产环境建议 false）
 Debug = true
 # 管理员默认账号（首次启动会按此初始化）
@@ -41,7 +41,7 @@ RequestTimeout = "10s"
 # 图片分析可恢复失败的额外补跑轮数，0 表示关闭
 AnalyzeImageFailureRetryCount = 2
 LLMAPIURL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-LLMAPIKey = "sk-6776c9e7cc0c460181ff512509a27656"
+LLMAPIKey = "sk-"
 LLMModel = "qwen3-vl-flash"
 # LLM 总 token 配额，<= 0 表示不启用 token 限额控制
 TotalTokenLimit = 198899
